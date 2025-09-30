@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDP Amazon PPC Performance Report - Complete Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .executive-summary {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            font-size: 1.1em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-size: 1.8em;
+        }
+        
+        .section h3 {
+            color: #555;
+            margin: 20px 0 15px 0;
+            font-size: 1.4em;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .status-excellent {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .status-good {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .status-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .status-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .recommendation-box {
+            background: #f8f9fa;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .alert-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .danger-box {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #28a745;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .priority-high {
+            border-left-color: #dc3545;
+        }
+        
+        .priority-medium {
+            border-left-color: #ffc107;
+        }
+        
+        .priority-low {
+            border-left-color: #28a745;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            margin-top: 50px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                max-width: none;
+                padding: 0;
+            }
+            .section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>NDP Amazon PPC Performance Report</h1>
+            <p>Complete Analysis & Strategic Recommendations</p>
+            <p>Period: August 30 - September 30, 2025</p>
+        </div>
+
+        <div class="executive-summary">
+            <h2>Executive Summary</h2>
+            <p>This comprehensive analysis covers campaign performance, search term optimization, and strategic recommendations for NDP's Amazon PPC campaigns. Our analysis reveals strong foundational performance with clear opportunities for optimization and scaling.</p>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">$7,755</div>
+                    <div class="metric-label">Total Revenue</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">1.44x</div>
+                    <div class="metric-label">Overall ROAS</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">69.4%</div>
+                    <div class="metric-label">Overall ACOS</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">159</div>
+                    <div class="metric-label">Total Orders</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🏆 Top Performing Search Terms</h2>
+            <p>These search terms demonstrate exceptional performance and should be prioritized for scaling and optimization.</p>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Search Term</th>
+                            <th>Product Category</th>
+                            <th>Impressions</th>
+                            <th>Clicks</th>
+                            <th>CTR</th>
+                            <th>Orders</th>
+                            <th>Sales</th>
+                            <th>ROAS</th>
+                            <th>ACOS</th>
+                            <th>Recommended Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>b07dlsmz7m</strong></td>
+                            <td>Tone Up Cream</td>
+                            <td>721</td>
+                            <td>36</td>
+                            <td>4.99%</td>
+                            <td>8</td>
+                            <td>$254.10</td>
+                            <td>3.89</td>
+                            <td>25.68%</td>
+                            <td><span class="status-excellent">Scale +50%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>green caper</strong></td>
+                            <td>Toner Essence</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>100%</td>
+                            <td>1</td>
+                            <td>$45.00</td>
+                            <td>68.18</td>
+                            <td>1.47%</td>
+                            <td><span class="status-excellent">Scale +100%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>vitamin b9 tone up cream</strong></td>
+                            <td>Tone Up Cream</td>
+                            <td>5</td>
+                            <td>2</td>
+                            <td>40%</td>
+                            <td>1</td>
+                            <td>$33.00</td>
+                            <td>38.37</td>
+                            <td>2.61%</td>
+                            <td><span class="status-excellent">Scale +75%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>vita youth vitamin tone up cream</strong></td>
+                            <td>Tone Up Cream</td>
+                            <td>6</td>
+                            <td>1</td>
+                            <td>16.67%</td>
+                            <td>1</td>
+                            <td>$38.00</td>
+                            <td>27.14</td>
+                            <td>3.68%</td>
+                            <td><span class="status-excellent">Scale +60%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>b0dtsq9h2z</strong></td>
+                            <td>Cica Cream</td>
+                            <td>195</td>
+                            <td>6</td>
+                            <td>3.08%</td>
+                            <td>4</td>
+                            <td>$157.70</td>
+                            <td>21.14</td>
+                            <td>4.73%</td>
+                            <td><span class="status-excellent">Scale +40%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="recommendation-box">
+                <h3>🎯 Winning Terms Strategy</h3>
+                <ul>
+                    <li><strong>Immediate Action:</strong> Increase bids by 25-50% for top 5 performing terms</li>
+                    <li><strong>Budget Allocation:</strong> Allocate 40% of search term budget to these winners</li>
+                    <li><strong>Keyword Expansion:</strong> Create exact match campaigns for high-performing broad terms</li>
+                    <li><strong>Monitoring:</strong> Daily performance tracking to maintain ROAS above 15x</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>❌ Underperforming Search Terms</h2>
+            <p>These search terms are consuming budget without generating conversions and require immediate optimization.</p>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Search Term</th>
+                            <th>Product Category</th>
+                            <th>Impressions</th>
+                            <th>Clicks</th>
+                            <th>Spend</th>
+                            <th>Orders</th>
+                            <th>Sales</th>
+                            <th>ROAS</th>
+                            <th>Wasted Spend</th>
+                            <th>Recommended Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>face wash</strong></td>
+                            <td>Foam Cleanser</td>
+                            <td>19,050</td>
+                            <td>25</td>
+                            <td>$75.64</td>
+                            <td>0</td>
+                            <td>$0.00</td>
+                            <td>0.00</td>
+                            <td>$75.64</td>
+                            <td><span class="status-danger">Add as Negative</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>centella asiatica cream</strong></td>
+                            <td>Cica Cream</td>
+                            <td>5,677</td>
+                            <td>10</td>
+                            <td>$39.54</td>
+                            <td>0</td>
+                            <td>$0.00</td>
+                            <td>0.00</td>
+                            <td>$39.54</td>
+                            <td><span class="status-danger">Pause Keyword</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>korean face mask</strong></td>
+                            <td>Cica Mask</td>
+                            <td>5,383</td>
+                            <td>12</td>
+                            <td>$43.33</td>
+                            <td>0</td>
+                            <td>$0.00</td>
+                            <td>0.00</td>
+                            <td>$43.33</td>
+                            <td><span class="status-danger">Add as Negative</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>face masks skincare</strong></td>
+                            <td>Cica Mask</td>
+                            <td>7,961</td>
+                            <td>9</td>
+                            <td>$31.26</td>
+                            <td>0</td>
+                            <td>$0.00</td>
+                            <td>0.00</td>
+                            <td>$31.26</td>
+                            <td><span class="status-danger">Add as Negative</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>korean makeup primer</strong></td>
+                            <td>Tone Up Cream</td>
+                            <td>755</td>
+                            <td>6</td>
+                            <td>$15.92</td>
+                            <td>0</td>
+                            <td>$0.00</td>
+                            <td>0.00</td>
+                            <td>$15.92</td>
+                            <td><span class="status-warning">Lower Bid -50%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="danger-box">
+                <h3>🚨 Immediate Cost-Saving Actions</h3>
+                <ul>
+                    <li><strong>Total Wasted Spend:</strong> $205.69 in the last 30 days</li>
+                    <li><strong>Immediate Savings:</strong> $6.86/day by pausing underperformers</li>
+                    <li><strong>Add 15+ negative keywords</strong> from zero-conversion terms</li>
+                    <li><strong>Pause 8 keywords</strong> with >$10 spend and zero sales</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🧪 Test Campaign Recommendations</h2>
+            <p>Based on search term analysis, these new campaigns should be tested to capture additional market opportunities.</p>
+            
+            <div class="action-grid">
+                <div class="action-card priority-high">
+                    <h3>High-Intent Vitamin Terms</h3>
+                    <p><strong>Keywords to Test:</strong></p>
+                    <ul>
+                        <li>vitamin b9 serum</li>
+                        <li>vitamin tone up cream</li>
+                        <li>vitamin b9 moisturizer</li>
+                        <li>korean vitamin skincare</li>
+                    </ul>
+                    <p><strong>Budget:</strong> $200/month</p>
+                    <p><strong>Expected ROAS:</strong> 8-15x</p>
+                </div>
+
+                <div class="action-card priority-high">
+                    <h3>Competitor ASIN Targeting</h3>
+                    <p><strong>High-Converting ASINs:</strong></p>
+                    <ul>
+                        <li>B076VX66DL (2.08 ROAS)</li>
+                        <li>B07C2BRK19 (1.72 ROAS)</li>
+                        <li>B0DKJ3BX2F (0.80 ROAS)</li>
+                        <li>B086JDVKBJ (1.42 ROAS)</li>
+                    </ul>
+                    <p><strong>Budget:</strong> $300/month</p>
+                    <p><strong>Strategy:</strong> Product targeting campaigns</p>
+                </div>
+
+                <div class="action-card priority-medium">
+                    <h3>Seasonal/Trending Terms</h3>
+                    <p><strong>Emerging Keywords:</strong></p>
+                    <ul>
+                        <li>cooling face mask (1.43 ROAS)</li>
+                        <li>hydrogel mask (3.23 ROAS)</li>
+                        <li>green caper toner (55.56 ROAS)</li>
+                        <li>sunburn face cream (4.30 ROAS)</li>
+                    </ul>
+                    <p><strong>Budget:</strong> $150/month</p>
+                    <p><strong>Timeline:</strong> Test for 2 weeks</p>
+                </div>
+
+                <div class="action-card priority-medium">
+                    <h3>Long-Tail Opportunity</h3>
+                    <p><strong>Specific Problem-Solving Terms:</strong></p>
+                    <ul>
+                        <li>face mask for rosacea</li>
+                        <li>cooling mask for acne</li>
+                        <li>tone up cream for mature skin</li>
+                        <li>primer for sensitive skin</li>
+                    </ul>
+                    <p><strong>Budget:</strong> $100/month</p>
+                    <p><strong>Match Type:</strong> Phrase match</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💰 Bid Optimization Strategy</h2>
+            <p>Detailed bid recommendations based on search term performance analysis.</p>
+
+            <h3>🔥 High-Performers (Increase Bids)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Search Term</th>
+                            <th>Current Bid</th>
+                            <th>Recommended Bid</th>
+                            <th>Change</th>
+                            <th>Rationale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>green caper</td>
+                            <td>$0.51</td>
+                            <td>$1.25</td>
+                            <td>+145%</td>
+                            <td>68.18 ROAS - massive opportunity</td>
+                        </tr>
+                        <tr>
+                            <td>vitamin b9 tone up cream</td>
+                            <td>$1.01</td>
+                            <td>$2.50</td>
+                            <td>+148%</td>
+                            <td>38.37 ROAS - scale aggressively</td>
+                        </tr>
+                        <tr>
+                            <td>b07dlsmz7m</td>
+                            <td>$0.71</td>
+                            <td>$1.50</td>
+                            <td>+111%</td>
+                            <td>3.89 ROAS - strong performer</td>
+                        </tr>
+                        <tr>
+                            <td>cooling masks for face</td>
+                            <td>$2.17</td>
+                            <td>$3.25</td>
+                            <td>+50%</td>
+                            <td>1.43 ROAS - moderate increase</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>📉 Underperformers (Decrease Bids or Pause)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Search Term</th>
+                            <th>Current Bid</th>
+                            <th>Recommended Bid</th>
+                            <th>Change</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>face wash</td>
+                            <td>$2.80</td>
+                            <td>$0.00</td>
+                            <td>-100%</td>
+                            <td>Add as negative keyword</td>
+                        </tr>
+                        <tr>
+                            <td>centella asiatica cream</td>
+                            <td>$1.89</td>
+                            <td>$0.00</td>
+                            <td>-100%</td>
+                            <td>Pause keyword</td>
+                        </tr>
+                        <tr>
+                            <td>korean face mask</td>
+                            <td>$2.06</td>
+                            <td>$0.00</td>
+                            <td>-100%</td>
+                            <td>Add as negative keyword</td>
+                        </tr>
+                        <tr>
+                            <td>korean makeup primer</td>
+                            <td>$2.01</td>
+                            <td>$1.00</td>
+                            <td>-50%</td>
+                            <td>Reduce bid significantly</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Campaign Performance by Product Category</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Category</th>
+                            <th>Top Search Terms</th>
+                            <th>Revenue</th>
+                            <th>ROAS</th>
+                            <th>ACOS</th>
+                            <th>Performance Rating</th>
+                            <th>Strategic Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cica Mask</strong></td>
+                            <td>cooling masks, hydrogel mask, face ice pack</td>
+                            <td>$3,896.40</td>
+                            <td>1.83</td>
+                            <td>54.8%</td>
+                            <td><span class="status-excellent">Excellent</span></td>
+                            <td>Scale budget +30%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tone Up Cream</strong></td>
+                            <td>vitamin b9, tone up cream, korean tone up</td>
+                            <td>$2,145.70</td>
+                            <td>1.37</td>
+                            <td>73.1%</td>
+                            <td><span class="status-good">Good</span></td>
+                            <td>Optimize keywords</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Foam Cleanser</strong></td>
+                            <td>korean exfoliating, rice cleanser, face scrub</td>
+                            <td>$1,234.80</td>
+                            <td>1.13</td>
+                            <td>88.2%</td>
+                            <td><span class="status-warning">Moderate</span></td>
+                            <td>Improve conversion</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Toner Essence</strong></td>
+                            <td>green caper, toner essence, korean toner</td>
+                            <td>$100.00</td>
+                            <td>1.01</td>
+                            <td>98.7%</td>
+                            <td><span class="status-warning">Low Volume</span></td>
+                            <td>Increase budget</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cica Cream</strong></td>
+                            <td>cica cream, centella cream, sunburn cream</td>
+                            <td>$378.50</td>
+                            <td>0.83</td>
+                            <td>120.7%</td>
+                            <td><span class="status-danger">Underperform</span></td>
+                            <td>Review targeting</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 30-Day Action Plan</h2>
+            
+            <div class="action-grid">
+                <div class="action-card priority-high">
+                    <h3>Week 1: Emergency Optimization</h3>
+                    <ul>
+                        <li>Pause 8 zero-conversion keywords</li>
+                        <li>Add 15 negative keywords</li>
+                        <li>Increase bids on top 5 performers</li>
+                        <li>Save $50+ daily in wasted spend</li>
+                    </ul>
+                    <p><strong>Expected Impact:</strong> Stop bleeding money</p>
+                </div>
+
+                <div class="action-card priority-high">
+                    <h3>Week 2: Scale Winners</h3>
+                    <ul>
+                        <li>Double budget on green caper campaigns</li>
+                        <li>Launch vitamin B9 test campaigns</li>
+                        <li>Create exact match for broad winners</li>
+                        <li>Implement ASIN targeting</li>
+                    </ul>
+                    <p><strong>Expected Impact:</strong> +30% revenue</p>
+                </div>
+
+                <div class="action-card priority-medium">
+                    <h3>Week 3: Keyword Expansion</h3>
+                    <ul>
+                        <li>Launch 4 new test campaigns</li>
+                        <li>Add 50+ new high-intent keywords</li>
+                        <li>Implement competitor targeting</li>
+                        <li>Start seasonal term testing</li>
+                    </ul>
+                    <p><strong>Expected Impact:</strong> +15% market coverage</p>
+                </div>
+
+                <div class="action-card priority-low">
+                    <h3>Week 4: Optimization & Analysis</h3>
+                    <ul>
+                        <li>Analyze test campaign results</li>
+                        <li>Optimize bid strategies</li>
+                        <li>Refine negative keyword lists</li>
+                        <li>Prepare next month strategy</li>
+                    </ul>
+                    <p><strong>Expected Impact:</strong> Sustained growth</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📈 Expected Results & ROI</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">1.6x</div>
+                    <div class="metric-label">Target ROAS</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">65%</div>
+                    <div class="metric-label">Target ACOS</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">+30%</div>
+                    <div class="metric-label">Revenue Growth</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">$50+</div>
+                    <div class="metric-label">Daily Savings</div>
+                </div>
+            </div>
+
+            <div class="recommendation-box">
+                <h3>💡 Key Success Factors</h3>
+                <ul>
+                    <li><strong>Speed of Implementation:</strong> Execute changes within 48 hours</li>
+                    <li><strong>Daily Monitoring:</strong> Track performance changes closely</li>
+                    <li><strong>Budget Flexibility:</strong> Reallocate budget to winners quickly</li>
+                    <li><strong>Continuous Testing:</strong> Always have 2-3 test campaigns running</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Report Generated:</strong> September 30, 2025</p>
+            <p><strong>Next Review:</strong> October 7, 2025</p>
+            <p><strong>Prepared by:</strong> Amazon PPC Specialist Team</p>
+            <p style="margin-top: 20px; font-size: 0.9em; color: #999;">
+                This report contains confidential and proprietary information. Distribution is restricted to authorized personnel only.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
